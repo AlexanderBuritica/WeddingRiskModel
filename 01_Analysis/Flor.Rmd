@@ -147,7 +147,7 @@ dplyr:: mutate(factor_Pond_2=part_invertido_2/total_2,
 df_portafolio_3<-df_portafolio_3 %>%
 dplyr:: mutate(factor_Pond_3=part_invertido_3/total_3,
          prom_pond_3=factor_Pond_3*renta_port_3,
-         mult0_3=prom_pond_3*0.3,
+         mult0_3=prom_pond_3*0.4,
          mult1_3=prom_pond_3+mult0_3,
          mult2_3=prom_pond_3-mult0_3)
 
@@ -165,9 +165,22 @@ B_1Z <- df_portafolio_1 %>%
 # number of people invited
 B_2 <- df_portafolio_2 %>%
   summarise(prom_pond_2=sum(prom_pond_2))
+
+
+# number of people invited
+B_2Z <- df_portafolio_2 %>%
+  summarise(prom_pond_2=sum(prom_pond_2))
+
+
+
 # number of people invited
 B_3 <- df_portafolio_3 %>%
   summarise(prom_pond_3=sum(prom_pond_3))
+# number of people invited
+B_3Z <- df_portafolio_3 %>%
+  summarise(prom_pond_3=sum(prom_pond_3))
+
+
 
 B2_1 <- df_portafolio_1 %>%
   summarise(prom_pond_1=sum(prom_pond2_1))
@@ -177,16 +190,26 @@ B2_1Z <- df_portafolio_1 %>%
 
 B2_2 <- df_portafolio_2 %>%
   summarise(prom_pond_2=sum(prom_pond2_2))
+
+B2_2Z <- df_portafolio_2 %>%
+  summarise(prom_pond_2=sum(prom_pond2_2))
+
+
 B2_3 <- df_portafolio_3 %>%
+  summarise(prom_pond_3=sum(prom_pond2_3))
+
+B2_3Z <- df_portafolio_3 %>%
   summarise(prom_pond_3=sum(prom_pond2_3))
 
 
 # number of people invited
-disminucion_1 <- 0.3
+disminucion <- 0.3
 disminucion_1Z <- 0.3
-
 disminucion_2 <- 0.35
-disminucion_2 <- 0.4
+disminucion_2Z <- 0.35
+
+disminucion_3 <- 0.4
+disminucion_3Z <- 0.4
 
 ```
 
@@ -198,34 +221,30 @@ disminucion_2 <- 0.4
 # function to calculate total cost
 calculate_RENT_min_OBL_1 <- function(A_1, 
                                    B_1, B2_1,
-                                   disminucion_1) {
+                                   disminucion) {
   # calculate added guest cost
-  rent_min_oblig1_1 <- ((A_1)*(1-disminucion_1)+((B_1)*disminucion_1))
-  rent_min_oblig2_1 <- ((A_1-(A_1*0.3))*(1-disminucion_1))  +((B2_1)*disminucion_1)
+  rent_min_oblig1_1 <- ((A_1)*(1-disminucion)+((B_1)*disminucion))
+  rent_min_oblig2_1 <- ((A_1-(A_1*0.3))*(1-disminucion))  +((B2_1)*disminucion)
   rent_min_oblig3_1 <- rent_min_oblig1_1-2
 
     # add to fixed cost
   rent_min_obl_tot_1 <- min(rent_min_oblig1_1,rent_min_oblig2_1,rent_min_oblig3_1)
   return(rent_min_obl_tot_1)
 }
-calculate_RENT_min_OBL_1Z <- function( B_1Z, B2_1Z,
-                                   disminucion_1Z,A_1Z) {
+calculate_RENT_min_OBL_1Z <- function( B_1, B2_1,
+                                   disminucion,A_1Z) {
   # calculate added guest cost
-  rent_min_oblig1_1Z <- ((A_1Z)*(1-disminucion_1Z)+((B_1Z)*disminucion_1Z))
-  rent_min_oblig2_1Z <- ((A_1Z-(A_1Z*0.3))*(1-disminucion_1Z))  +((B2_1Z)*disminucion_1Z)
+  rent_min_oblig1_1Z <- ((A_1Z)*(1-disminucion)+((B_1Z)*disminucion))
+  rent_min_oblig2_1Z <- ((A_1Z-(A_1Z*0.3))*(1-disminucion))  +((B2_1Z)*disminucion)
   rent_min_oblig3_1Z <- rent_min_oblig1_1Z-2
 
     # add to fixed cost
   rent_min_obl_tot_1Z <- min(rent_min_oblig1_1Z,rent_min_oblig2_1Z,rent_min_oblig3_1Z)
   return(rent_min_obl_tot_1Z)
 }
-
-
-
-
 calculate_RENT_min_OBL_2 <- function(A_2, 
                                    B_2, B2_2,
-                                   disminucion_2) {
+                                   disminucion) {
   # calculate added guest cost
   rent_min_oblig1_2 <- ((A_2)*(1-0.2)+((B_2)*0.2))
   rent_min_oblig2_2 <- ((A_2-(A_2*0.35))*(1-0.2))  +((B2_2)*0.2)
@@ -235,9 +254,20 @@ calculate_RENT_min_OBL_2 <- function(A_2,
   rent_min_obl_tot_2 <- min(rent_min_oblig1_2,rent_min_oblig2_2,rent_min_oblig3_2)
   return(rent_min_obl_tot_2)
 }
+calculate_RENT_min_OBL_2Z <- function(B_2, B2_2,
+                                   disminucion,A_1Z ) {
+  # calculate added guest cost
+  rent_min_oblig1_2Z <- ((A_1Z)*(1-0.2)+((B_2)*0.2))
+  rent_min_oblig2_2Z <- ((A_1Z-(A_1Z*0.35))*(1-0.2))  +((B2_2)*0.2)
+  rent_min_oblig3_2Z <- rent_min_oblig1_2Z-3
+
+    # add to fixed cost
+  rent_min_obl_tot_2Z <- min(rent_min_oblig1_2Z,rent_min_oblig2_2Z,rent_min_oblig3_2Z)
+  return(rent_min_obl_tot_2Z)
+}
 calculate_RENT_min_OBL_3 <- function(A_3, 
                                    B_3, B2_3,
-                                   disminucion_3) {
+                                   disminucion) {
   # calculate added guest cost
   rent_min_oblig1_3 <- ((A_3)*(1-0.1)+((B_3)*0.1))
   rent_min_oblig2_3 <- ((A_3-(A_3*0.4))*(1-0.1))  +((B2_3)*0.1)
@@ -247,14 +277,24 @@ calculate_RENT_min_OBL_3 <- function(A_3,
   rent_min_obl_tot_3 <- min(rent_min_oblig1_3,rent_min_oblig2_3,rent_min_oblig3_3)
   return(rent_min_obl_tot_3)
 }
+calculate_RENT_min_OBL_3Z <- function(B_3, B2_3,
+                                   disminucion,A_1Z) {
+  # calculate added guest cost
+  rent_min_oblig1_3Z <- ((A_1Z)*(1-0.1)+((B_3)*0.1))
+  rent_min_oblig2_3Z <- ((A_1Z-(A_1Z*0.4))*(1-0.1))  +((B2_3)*0.1)
+  rent_min_oblig3_3Z <- rent_min_oblig1_3Z-4
 
+    # add to fixed cost
+  rent_min_obl_tot_3Z <- min(rent_min_oblig1_3Z,rent_min_oblig2_3Z,rent_min_oblig3_3Z)
+  return(rent_min_obl_tot_3Z)
+}
 # function to calculate total cost
 class_RENT_min_OBL_1 <- function(A_1, 
                                    B_1, B2_1,
-                                   disminucion_1) {
+                                   disminucion) {
   # calculate added guest cost
-  rent_min_oblig1_1 <- ((A_1)*(1-disminucion_1)+((B_1)*disminucion_1))
-  rent_min_oblig2_1 <- ((A_1-(A_1*0.3))*(1-disminucion_1))  +((B2_1)*disminucion_1)
+  rent_min_oblig1_1 <- ((A_1)*(1-disminucion)+((B_1)*disminucion))
+  rent_min_oblig2_1 <- ((A_1-(A_1*0.3))*(1-disminucion))  +((B2_1)*disminucion)
   rent_min_oblig3_1 <- rent_min_oblig1_1-2
 
     # add to fixed cost
@@ -265,11 +305,11 @@ class_RENT_min_OBL_1 <- function(A_1,
   return(class_rent_1)
 }
 
-class_RENT_min_OBL_1Z <- function(B_1Z, B2_1Z,
-                                   disminucion_1Z,A_1Z) {
+class_RENT_min_OBL_1Z <- function(B_1, B2_1,
+                                   disminucion,A_1Z) {
   # calculate added guest cost
-  rent_min_oblig1_1Z <- ((A_1Z)*(1-disminucion_1Z)+((B_1Z)*disminucion_1Z))
-  rent_min_oblig2_1Z <- ((A_1Z-(A_1Z*0.3))*(1-disminucion_1Z))  +((B2_1Z)*disminucion_1Z)
+  rent_min_oblig1_1Z <- ((A_1Z)*(1-disminucion)+((B_1)*disminucion))
+  rent_min_oblig2_1Z <- ((A_1Z-(A_1Z*0.3))*(1-disminucion))  +((B2_1)*disminucion)
   rent_min_oblig3_1Z <- rent_min_oblig1_1Z-2
 
     # add to fixed cost
@@ -294,6 +334,23 @@ class_RENT_min_OBL_2 <- function(A_2,
                   ifelse(rent_min_obl_tot_2 == rent_min_oblig2_2, "((A*80%)+(B*20%)DISMINUIDO EN UN 35%)",  "(A*80%)+(B*20%) MENOS 3%"))
   return(class_rent_2)
 }
+
+class_RENT_min_OBL_2Z <- function(B_2, B2_2,
+                                   disminucion,A_1Z ) {
+  # calculate added guest cost
+  rent_min_oblig1_2Z <- ((A_1Z)*(1-0.2)+((B_2)*0.2))
+  rent_min_oblig2_2Z <- ((A_1Z-(A_1Z*0.35))*(1-0.2))  +((B2_2)*0.2)
+  rent_min_oblig3_2Z <- rent_min_oblig1_2Z-3
+
+    # add to fixed cost
+  rent_min_obl_tot_2Z <- min(rent_min_oblig1_2Z,rent_min_oblig2_2Z,rent_min_oblig3_2Z)
+  class_rent_2Z<- ifelse(rent_min_obl_tot_2Z == rent_min_oblig1_2Z, "(A*80%)+(B*20%)",
+                  ifelse(rent_min_obl_tot_2Z == rent_min_oblig2_2Z, "((A*80%)+(B*20%)DISMINUIDO EN UN 35%)",  "(A*80%)+(B*20%) MENOS 3%"))
+  return(class_rent_2Z)
+}
+
+
+
 class_RENT_min_OBL_3 <- function(A_3, 
                                    B_3, B2_3,
                                    disminucion_3) {
@@ -308,33 +365,49 @@ class_RENT_min_OBL_3 <- function(A_3,
                   ifelse(rent_min_obl_tot_3 == rent_min_oblig2_3, "((A*90%)+(B*10%)DISMINUIDO EN UN 40%)",  "(A*90%)+(B*10%) MENOS 4%"))
   return(class_rent_3)
 }
+class_RENT_min_OBL_3Z <- function(B_3, B2_3,
+                                   disminucion,A_1Z) {
+  # calculate added guest cost
+  rent_min_oblig1_3Z <- ((A_1Z)*(1-0.1)+((B_3Z)*0.1))
+  rent_min_oblig2_3Z <- ((A_1Z-(A_1Z*0.4))*(1-0.1))  +((B2_3Z)*0.1)
+  rent_min_oblig3_3Z <- rent_min_oblig1_3Z-4
+
+    # add to fixed cost
+  rent_min_obl_tot_3Z <- min(rent_min_oblig1_3Z,rent_min_oblig2_3Z,rent_min_oblig3_3Z)
+  class_rent_3Z<- ifelse(rent_min_obl_tot_3Z == rent_min_oblig1_3Z, "(A*90%)+(B*10%)",
+                  ifelse(rent_min_obl_tot_3Z == rent_min_oblig2_3Z, "((A*90%)+(B*10%)DISMINUIDO EN UN 40%)",  "(A*90%)+(B*10%) MENOS 4%"))
+  return(class_rent_3Z)
+}
+
+
+
 
 # expected total cost
 expected_rent_1 <- calculate_RENT_min_OBL_1(A_1, 
                                    B_1, B2_1,
-                                   disminucion_1)
+                                   disminucion)
 # expected total cost
 expected_rent_1Z <- calculate_RENT_min_OBL_1Z(A_1Z, 
                                    B_1Z, B2_1Z,
-                                   disminucion_1Z)
+                                   disminucion)
 
 
 expected_rent_2 <- calculate_RENT_min_OBL_2(A_2, 
                                    B_2, B2_2,
-                                   disminucion_2)
+                                   disminucion)
 expected_rent_3 <- calculate_RENT_min_OBL_3(A_3, 
                                    B_3, B2_3,
-                                   disminucion_3)
+                                   disminucion)
 
 class_rent_1 <- class_RENT_min_OBL_1(A_1, 
                                    B_1, B2_1,
-                                   disminucion_1)
+                                   disminucion)
 class_rent_2 <- class_RENT_min_OBL_2(A_2, 
                                    B_2, B2_2,
-                                   disminucion_2)
+                                   disminucion)
 class_rent_3 <- class_RENT_min_OBL_3(A_3, 
                                    B_3, B2_3,
-                                   disminucion_3)
+                                   disminucion)
 
 
 # convert to dataframe for printing
@@ -392,9 +465,9 @@ sample_guests <- function(n, p) {
 
 
 ```{r include=FALSE}
-simulate_weddings2 <- function(k, n, p,
+simulate_weddings_1 <- function(k, n, p,
                                B_1, B2_1,
-                                   disminucion_1,A_1) {
+                                   disminucion,A_1) {
   
 A_1Z  <- replicate(
     # for k trials...
@@ -406,58 +479,226 @@ df_1 <- data.frame(A_1Z) %>%
     as.tibble() %>%
     mutate(trial = row_number(),
            Rent_Min_Obl= 0,
-           Class_Rent=""
+           Class_Rent="",
+           Escenario=""
            )
 
 for ( i  in 1:nrow(df_1)){
   "seleccione el individuo i"
-  bar_i <- df_1[i,]
-  id <- bar_i$A_1Z
- print( id)
-total_cost_i =calculate_RENT_min_OBL_1Z(B_1Z, B2_1Z,
-                                  disminucion_1Z,id)
+  bar_1_i <- df_1[i,]
+  id_1 <- bar_1_i$A_1Z
+ #print( id)
+total_cost_i =calculate_RENT_min_OBL_1Z(B_1, B2_1,
+                                  disminucion,id_1)
 
-CLASS_cost_i =class_RENT_min_OBL_1Z(B_1Z, B2_1Z,
-                                  disminucion_1Z,id)
+CLASS_cost_i =class_RENT_min_OBL_1Z(B_1, B2_1,
+                                  disminucion,id_1)
 
-print( total_cost_i)
+
+#print( total_cost_i)
 df_1[i,3] <- total_cost_i
 df_1[i,4] <- CLASS_cost_i
+df_1[i,5] <- "1.Conservador"
 
- }
+df_1<-df_1%>%
+  mutate(PorDebajRetiro = case_when(
+      Rent_Min_Obl <3.03 ~ "< Rentabilidad Minima Retiro Programado (3.03)",
+      Rent_Min_Obl == 3.03 ~ "Rentabilidad Minima Retiro Programado (3.03)",
+      Rent_Min_Obl > 3.03 ~ "> Rentabilidad Minima Retiro Programado (3.03)"),
+      # used for coloring risk profile
+      PorDebajRetiro = factor(PorDebajRetiro, levels = c("> Rentabilidad Minima Retiro Programado (3.03)", "Rentabilidad Minima Retiro Programado (3.03)", "< Rentabilidad Minima Retiro Programado (3.03)"))
+    ) 
+}
 return(df_1)
 }
 ```
 
 
+```{r include=FALSE}
+simulate_weddings_2 <- function(k, n, p,
+                               B_2, B2_2,
+                                   disminucion,A_1) {
+  
+A_1Z  <- replicate(
+    # for k trials...
+    k, runif(1, min = n-5, max = n),
+    # sample n guests of probability p_1 to p_2
+    sample_guests(A_1, p = runif(1, min = p[1], max = p[2]))
+  )
 
+
+df_2 <- data.frame(A_1Z) %>%
+    as.tibble() %>%
+    mutate(trial = row_number(),
+           Rent_Min_Obl= 0,
+           Class_Rent="",
+           Escenario=""
+           
+           )
+
+for ( i  in 1:nrow(df_2)){
+  "seleccione el individuo i"
+  bar_2_i <- df_2[i,]
+  id_2 <- bar_2_i$A_1Z
+ #print( id)
+total_cost_2_i =calculate_RENT_min_OBL_2Z(B_2, B2_2,
+                                  disminucion+0.05,id_2)
+
+CLASS_cost_2_i =class_RENT_min_OBL_2Z(B_2, B2_2,
+                                  disminucion+0.05,id_2)
+
+#print( total_cost_i)
+df_2[i,3] <- total_cost_2_i
+df_2[i,4] <- CLASS_cost_2_i
+df_2[i,5] <- "2.Moderado"
+
+df_2<-df_2%>%
+  mutate(PorDebajRetiro = case_when(
+      Rent_Min_Obl <3.03 ~ "< Rentabilidad Minima Retiro Programado (3.03)",
+      Rent_Min_Obl == 3.03 ~ "Rentabilidad Minima Retiro Programado (3.03)",
+      Rent_Min_Obl > 3.03 ~ "> Rentabilidad Minima Retiro Programado (3.03)"),
+      # used for coloring risk profile
+      PorDebajRetiro = factor(PorDebajRetiro, levels = c("> Rentabilidad Minima Retiro Programado (3.03)", "Rentabilidad Minima Retiro Programado (3.03)", "< Rentabilidad Minima Retiro Programado (3.03)"))
+    ) 
+
+
+ }
+return(df_2)
+}
+```
+
+
+
+
+```{r include=FALSE}
+simulate_weddings_3 <- function(k, n, p,
+                               B_3, B2_3,
+                                   disminucion,A_1) {
+  
+A_1Z  <- replicate(
+    # for k trials...
+    k, runif(1, min = n-5, max = n),
+    # sample n guests of probability p_1 to p_2
+    sample_guests(A_1, p = runif(1, min = p[1], max = p[2]))
+  )
+
+df_3 <- data.frame(A_1Z) %>%
+    as.tibble() %>%
+    mutate(trial = row_number(),
+           Rent_Min_Obl= 0,
+           Class_Rent="",
+           Escenario=""
+           )
+
+for ( i  in 1:nrow(df_3)){
+  "seleccione el individuo i"
+  bar_3_i <- df_3[i,]
+  id_3 <- bar_3_i$A_1Z
+ #print( id)
+total_cost_3_i =calculate_RENT_min_OBL_3Z(B_3, B2_3,
+                                  disminucion+0.1,id_3)
+
+CLASS_cost_3_i =class_RENT_min_OBL_3Z(B_3, B2_3,
+                                   disminucion+0.1,id_3)
+
+#print( total_cost_i)
+df_3[i,3] <- total_cost_3_i
+df_3[i,4] <- CLASS_cost_3_i
+df_3[i,5] <- "3.Mayor Riesgo"
+
+
+df_3<-df_3%>%
+  mutate(PorDebajRetiro = case_when(
+      Rent_Min_Obl <3.03 ~ "< Rentabilidad Minima Retiro Programado (3.03)",
+      Rent_Min_Obl == 3.03 ~ "Rentabilidad Minima Retiro Programado (3.03)",
+      Rent_Min_Obl > 3.03 ~ "> Rentabilidad Minima Retiro Programado (3.03)"),
+      # used for coloring risk profile
+      PorDebajRetiro = factor(PorDebajRetiro, levels = c("> Rentabilidad Minima Retiro Programado (3.03)", "Rentabilidad Minima Retiro Programado (3.03)", "< Rentabilidad Minima Retiro Programado (3.03)"))
+    ) 
+ }
+return(df_3)
+}
+```
+
+                                   
 ```{r echo=FALSE}
-guest_sim_tbl <- simulate_weddings2(k = 1000, 
+guest_sim_tbl1 <- simulate_weddings_1(k = 9000, 
                                    n = 10, 
                                    p = c(0.3, 0.85),
                                    A_1 = 6.063, 
-                                   B_1 = 7.193676, 
-                                   B2_1 = 4.635025, 
-                                   disminucion_1 = 0.3)
+                                   B_1 = B_1, 
+                                   B2_1 = B2_1, 
+                                   disminucion = 0.3)
+
+guest_sim_tbl2 <- simulate_weddings_2(k = 9000, 
+                                   n = 10, 
+                                   p = c(0.3, 0.85),
+                                   A_1 = 6.063, 
+                                   B_2 = B_2, 
+                                   B2_2 = B2_2,
+                                   disminucion = 0.3)
+
+guest_sim_tbl3 <- simulate_weddings_3(k = 9000, 
+                                   n = 10, 
+                                   p = c(0.3, 0.85),
+                                   A_1 = 6.063, 
+                                   B_3 = B_3,
+                                   B2_3 = B2_3,
+                                   disminucion = 0.3)
+
+```
+
+
+
+```{r}
+df_final<-rbind(guest_sim_tbl1,guest_sim_tbl2)
+df_final<-rbind(df_final,guest_sim_tbl3)
+
+```
+
+
+
+```{r}
 # preview of simulation data
-guest_sim_tbl %>%
+df_final %>%
   slice(1:50) %>%
   kableExtra::kable() %>%
   kable_styling(c("striped", "bordered"), full_width = F, position = "left")
 ```
 
 
+```{r}
+# rentabilidad minima Especial de retiro Programado
+rent_min_esp_retiro_progr <- 3.03
+```
+
+```{r}
+# function to provide recommendation based on simulation outcomes
+recommend <- function(df_final, rent_min_esp_retiro_progr) {
+  
+  # percentage of simulations that go over budget
+  risk_pct <- df_final %>%
+    summarize(mean(Rent_Min_Obl < 3.03)) %>% 
+    pull()
+  
+  # determine if risk percentage exceeds tolerance
+  recommendation <- ifelse(risk_pct > rent_min_esp_retiro_progr, "> Rentabilidad Minima Retiro Programado (3.03)","< Rentabilidad Minima Retiro Programado (3.03)")
+  
+  return(recommendation)
+}
+```
+
 
 
 ```{r}
 # plot guest count distribution with 95% confidence interval
-plot_guest_count <- function(simulation_tbl) {
+plot_guest_count <- function(df_final) {
   
   # generate 2.5 and 97.5 percentiles from simulation data
-  ci_int_guest <- quantile(simulation_tbl$A_1Z, p = c(0.025, .975))
+  ci_int_guest <- quantile(df_final$A_1Z, p = c(0.025, .975))
   
   # create histogram plot of results
-  p <- simulation_tbl %>%
+  p <- df_final %>%
     ggplot(aes(A_1Z)) +
     geom_histogram(binwidth = 1, 
                    fill = cbPalette[6],
@@ -470,46 +711,131 @@ plot_guest_count <- function(simulation_tbl) {
                          "{ci_int_guest[2]} guests"),
          x = "Total Guests A",
          y = "Simulation Trials",
-         caption = "Source: Simulation Results")
+         caption = "Source: Simulation Results")+ 
+  facet_wrap(Escenario~.)
   
   return(p) 
 }
 # plot cost distribution with 95% confidence interval
-plot_cost <- function(simulation_tbl, Rent_Min_Obl = 0.25) {
+plot_cost <- function(df_final, Rent_Min_Obl = 0.25) {
   
-  ci_int_cost <- quantile(simulation_tbl$Rent_Min_Obl, p = c(0.025, .975))
+  ci_int_cost <- quantile(df_final$Rent_Min_Obl, p = c(0.025, .975))
   # create histogram of results
-  p <- simulation_tbl %>%
+  p <- df_final %>%
     ggplot(aes(Rent_Min_Obl)) +
     # histogram bin size should be equal to per guest variable cost
     geom_histogram(binwidth = Rent_Min_Obl,
                    fill = cbPalette[8],
                    color = "white") +
     geom_hline(yintercept = 0, size = .5, colour="#333333") +
-    labs(title = "Total Guest Rentabilidad",
+    labs(title = "Total Guest Rentabilidad Minima Obligatoria",
          subtitle = glue("95% Confidence Estimate: ${ci_int_cost[1]} -",
                          "${ci_int_cost[2]}"),
-         x = "Rentabilidad Minima",
+         x = "Rentabilidad Minima Obligatoria",
          y = "Simulation Trials",
          caption = "Source: Simulation Results") +
     geom_vline(xintercept = ci_int_cost[1], linetype = "dashed") +
-    geom_vline(xintercept = ci_int_cost[2], linetype = "dashed")
+    geom_vline(xintercept = ci_int_cost[2], linetype = "dashed")+ 
+  facet_wrap(.~Escenario)
   
   return(p)
 }
+
+
+# plot the risk profile with probability of going over budget
+plot_risk <- function(df_final, Rent_Min_Obl = 0.25) {
+  
+  ci_int_risk <- quantile(df_final$Rent_Min_Obl, p = c(0.025, .975))
+  
+  # risk profile
+  p_over_budget <- df_final %>%
+    summarise(p_val = mean(Rent_Min_Obl < 3.03))
+  
+  # plot risk profile with 95% confidence interval
+  p <- df_final %>%
+    # color histrogram bins based on positive/negative risk
+    ggplot(aes(Rent_Min_Obl, fill = PorDebajRetiro)) +
+    # histogram bin size should be equal to per guest variable cost
+    geom_histogram(binwidth = Rent_Min_Obl,
+                   color = "white") +
+    geom_hline(yintercept = 0, size = .5, colour = "#333333") +
+    scale_fill_manual(values = c(cbPalette[4], cbPalette[5], cbPalette[7])) +
+    labs(title = "Total Budget Risk",
+         subtitle = glue("95% Confidence Estimate: ${ci_int_risk[1]} - ${ci_int_risk[2]} ",
+                         "({p_over_budget * 100}% risk)"),
+         x = "Net Risk",
+         y = "Simulation Trials",
+         caption = "Source: Simulation Results") +
+    guides(fill = FALSE) +
+    geom_vline(xintercept = ci_int_risk[1], linetype = "dashed") +
+    geom_vline(xintercept = ci_int_risk[2], linetype = "dashed")+ 
+  facet_wrap(.~Escenario)
+  
+  # if there are no even budget outcomes
+ if (length(unique(df_final$PorDebajRetiro)) <3.03) {
+    p <- p +
+      scale_fill_manual(values = c(cbPalette[4], cbPalette[7]))
+  }
+  
+  return(p)
+}
+
+
+
+# plot the distribution of recommendation outcomes
+plot_recommendation <- function(df_final, rent_min_esp_retiro_progr) {
+  
+  # get recommendation for subtitle
+  ovr_recommendation <- recommend(df_final, rent_min_esp_retiro_progr)
+  
+  # build main plot
+  p <- df_final %>%
+    ggplot(aes(PorDebajRetiro, fill = PorDebajRetiro)) +
+    # convert counts to percentages
+    geom_bar(aes(y = (..count..) / sum(..count..))) + 
+    scale_y_continuous(labels = function(x) glue("{round(x , 2)}%")) +
+    labs(
+      title = "Recommendation Outcomes",
+      subtitle = glue("Overall Recommendation: {ovr_recommendation}"),
+      x = "",
+      y = "Simulation Trials",
+      caption = "Source: Simulation Results"
+    ) +
+    guides(fill = FALSE) +
+    geom_hline(yintercept = 0, size = .5, colour = "#333333") +
+    # add dashed line for risk tolernace
+    geom_hline(yintercept = rent_min_esp_retiro_progr, linetype = "dashed")+ 
+  facet_wrap(.~Escenario)
+  
+  # if risk tolerance is exceeded, color the Invite Less bar 
+  if (mean(df_final$Rent_Min_Obl < 3.03) >= rent_min_esp_retiro_progr) {
+    p <- p + 
+      scale_fill_manual(values = c(cbPalette[1], cbPalette[7]))
+  } else {
+    # else color the Invite All bar
+    p <- p + 
+      scale_fill_manual(values = c(cbPalette[4], cbPalette[1]))
+  }
+  
+  return(p)
+}
+
 ```
 
 
 ```{r}
-plot_guest_count(guest_sim_tbl)
+plot_guest_count(df_final)
 ```
 
 
 ```{r}
-plot_cost(guest_sim_tbl)
+plot_cost(df_final)
 ```
 
 
+```{r}
+plot_risk(df_final)
+```
 
 
 

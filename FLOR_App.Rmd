@@ -1,0 +1,105 @@
+---
+title: "FLOR"
+runtime: shiny
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    source_code: https://github.com/bclark86/WeddingRiskModel
+---
+
+```{r global, include=FALSE}
+# other libraries included in source scripts
+library(flexdashboard)
+
+# calculate functions are sourced by the simulate file
+source("00_Scripts/simulateFLOR.R")
+source("00_Scripts/plotFLOR2.R")
+```
+
+Sidebar {.sidebar}
+======================================================================
+
+```{r}
+numericInput("budget", "TOTAL", 6, min = 5, max = 12, 
+             step = 1, width = NULL
+)
+
+sliderInput("guest_prob", "Guest Probability:", min = 0, max = 100, 
+            value = c(30, 85), step = 5, post  = " %"
+)
+sliderInput("A_1", "Rentabilidad Promedio Fondos", min = 0, max = 100, 
+             step = 5, post  = " %"
+)
+
+sliderInput("B_1", "Rentabilidad Promedio Portafolio", min = 0, max = 100, 
+             step = 5, post  = " %"
+)
+
+sliderInput("B2_1", "Rentabilidad Promedio Portafolio-Disminución", min = 0, max = 100, 
+             step = 5, post  = " %"
+)
+numericInput("var_cost", "Variable Rent Cost: ", 0.25, min = 0, max = 1, 
+             step = NA, width = NULL
+)
+sliderInput("disminucion", "Disminución: ", min = 0, max = 100, 
+            value = 3, step = 0.1, post  = " %"
+)
+
+actionButton("run", "Run Model")
+```
+
+```{r}
+# generate simulated values
+df_final <- reactive({
+  
+  input$run
+  
+  sim_tbl1 <- isolate(simulate_weddings_1(
+    k = 9000,
+    n = input$budget,
+    p = c((input$guest_prob[1] / 100), (input$guest_prob[2] / 100)),
+    A_1 = input$A_1, 
+    B_1 = input$B_1, 
+    B2_1 = input$B2_1, 
+    disminucion = input$disminucion
+  )
+  )
+  
+})
+```
+
+
+Model
+======================================================================
+
+Row
+-----------------------------------------------------------------------
+
+### FLOR Summary
+
+
+```{r}
+renderPlot({
+  
+  input$run
+  
+  p <- isolate(plot_guest_count(df_final()))
+  
+  print(p)
+  
+})
+```
+
+### Cost Profile
+
+```{r}
+renderPlot({
+  
+  input$run
+  
+  p <- isolate(plot_cost(df_final(), input$var_cost))
+  
+  print(p)
+  
+})
+```
