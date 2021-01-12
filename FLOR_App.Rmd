@@ -4,45 +4,54 @@ runtime: shiny
 output: 
   flexdashboard::flex_dashboard:
     orientation: rows
-    source_code: https://github.com/bclark86/WeddingRiskModel
+    source_code: https://github.com/AlexanderBuritica/WeddingRiskModel
 ---
 
 ```{r global, include=FALSE}
 # other libraries included in source scripts
 library(flexdashboard)
+library(knitr)
+library(kableExtra)
+library(tidyverse)
+library(glue)
 
 # calculate functions are sourced by the simulate file
-source("00_Scripts/simulateFLOR.R")
-source("00_Scripts/plotFLOR2.R")
+source("00_Scripts/simulateFLOR3_V2.R")
+source("00_Scripts/plotFLOR2_V2.R")
 ```
 
 Sidebar {.sidebar}
 ======================================================================
 
 ```{r}
-numericInput("budget", "TOTAL", 6, min = 5, max = 12, 
-             step = 1, width = NULL
-)
-
 sliderInput("guest_prob", "Guest Probability:", min = 0, max = 100, 
             value = c(30, 85), step = 5, post  = " %"
 )
-sliderInput("A_1", "Rentabilidad Promedio Fondos", min = 0, max = 100, 
-             step = 5, post  = " %"
+sliderInput("SKANDIA", "FONDO SKANDIA", min = 0, max = 10,  value = 6.37, 
+             step = 0.010, post  = " %"
+)
+sliderInput("COLFONDOS", "FONDO COLFONDOS", min = 0, max = 10,  value = 6.11, 
+             step = 0.010, post  = " %"
+)
+sliderInput("PORVENIR", "FONDO PORVENIR", min = 0, max = 10,  value = 6.11, 
+             step = 0.010, post  = " %"
+)
+sliderInput("PROTECCION", "FONDO PROTECCION", min = 0, max = 10,  value = 5.89, 
+             step = 0.010, post  = " %"
 )
 
-sliderInput("B_1", "Rentabilidad Promedio Portafolio", min = 0, max = 100, 
-             step = 5, post  = " %"
+
+sliderInput("B_1", "Rentabilidad Promedio Portafolio", min = 0, max = 10,  value = 7.193676, 
+             step = 0.010, post  = " %"
 )
 
-sliderInput("B2_1", "Rentabilidad Promedio Portafolio-Disminución", min = 0, max = 100, 
-             step = 5, post  = " %"
+sliderInput("B2_1", "Rentabilidad Promedio Portafolio-Disminución", min = 0, max = 10,  value = 4.635025, 
+             step = 0.010, post  = " %"
 )
-numericInput("var_cost", "Variable Rent Cost: ", 0.25, min = 0, max = 1, 
-             step = NA, width = NULL
-)
-sliderInput("disminucion", "Disminución: ", min = 0, max = 100, 
-            value = 3, step = 0.1, post  = " %"
+
+
+sliderInput("disminucion", "Disminucion:", min = 0, max = 10, 
+            value = 0.3, step = 0.1, post  = " %"
 )
 
 actionButton("run", "Run Model")
@@ -50,15 +59,18 @@ actionButton("run", "Run Model")
 
 ```{r}
 # generate simulated values
-df_final <- reactive({
+guest_sim_tbl1 <- reactive({
   
   input$run
   
-  sim_tbl1 <- isolate(simulate_weddings_1(
-    k = 9000,
-    n = input$budget,
+  sim_tbl1 <- isolate(simulate_weddings_2x(
+    k = 500,
+    n = 10,
     p = c((input$guest_prob[1] / 100), (input$guest_prob[2] / 100)),
-    A_1 = input$A_1, 
+    SKANDIA = input$SKANDIA, 
+    COLFONDOS = input$COLFONDOS, 
+    PORVENIR = input$PORVENIR, 
+    PROTECCION= input$PROTECCION,
     B_1 = input$B_1, 
     B2_1 = input$B2_1, 
     disminucion = input$disminucion
@@ -66,7 +78,51 @@ df_final <- reactive({
   )
   
 })
+
+
+
+# get recommendation
+recommendation <- reactive({
+  
+  input$run
+  
+  rec <- isolate(alex(guest_sim_tbl1())%>%
+      round(2)
+    )
+  
+  
+})
+
+# get recommendation
+recommendation2 <- reactive({
+  
+  input$run
+  
+  rec <- isolate(alex2(guest_sim_tbl1())%>%
+      round(2)
+    )
+  
+  
+})
+
+# get recommendation
+recommendation3 <- reactive({
+  
+  input$run
+  
+  rec <- isolate(alex3(guest_sim_tbl1())%>%
+      round(2)
+    )
+  
+  
+})
+
+
 ```
+
+
+
+
 
 
 Model
@@ -75,31 +131,61 @@ Model
 Row
 -----------------------------------------------------------------------
 
-### FLOR Summary
+### Valor Promedio Escenario Conservador
 
+```{r}
+renderValueBox({
+  
+  valueBox(paste0(recommendation(), "%"),
+           color = cbPalette[4])
+  
+  
+})
+```
+
+### Valor Promedio Escenario Moderado
+
+
+```{r}
+renderValueBox({
+  
+  valueBox(paste0(recommendation2(), "%"),
+           color = cbPalette[4])
+  
+  
+})
+```
+
+### Valor Promedio Escenario Mayor Riesgo
+
+```{r}
+renderValueBox({
+  
+  valueBox(paste0(recommendation3(), "%"),
+           color = cbPalette[4])
+  
+  
+})
+```
+
+
+
+Row
+-----------------------------------------------------------------------
+
+
+
+### Simulacion Rentabilidad minima promedio
 
 ```{r}
 renderPlot({
   
   input$run
   
-  p <- isolate(plot_guest_count(df_final()))
+  p <- isolate(plot_cost(guest_sim_tbl1()))
   
   print(p)
   
 })
 ```
 
-### Cost Profile
-
-```{r}
-renderPlot({
-  
-  input$run
-  
-  p <- isolate(plot_cost(df_final(), input$var_cost))
-  
-  print(p)
-  
-})
-```

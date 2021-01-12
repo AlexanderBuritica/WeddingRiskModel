@@ -622,7 +622,7 @@ return(df_3)
 
                                    
 ```{r echo=FALSE}
-guest_sim_tbl1 <- simulate_weddings_1(k = 9000, 
+guest_sim_tbl1 <- simulate_weddings_1(k = 100, 
                                    n = 10, 
                                    p = c(0.3, 0.85),
                                    A_1 = 6.063, 
@@ -630,7 +630,7 @@ guest_sim_tbl1 <- simulate_weddings_1(k = 9000,
                                    B2_1 = B2_1, 
                                    disminucion = 0.3)
 
-guest_sim_tbl2 <- simulate_weddings_2(k = 9000, 
+guest_sim_tbl2 <- simulate_weddings_2(k = 100, 
                                    n = 10, 
                                    p = c(0.3, 0.85),
                                    A_1 = 6.063, 
@@ -638,7 +638,7 @@ guest_sim_tbl2 <- simulate_weddings_2(k = 9000,
                                    B2_2 = B2_2,
                                    disminucion = 0.3)
 
-guest_sim_tbl3 <- simulate_weddings_3(k = 9000, 
+guest_sim_tbl3 <- simulate_weddings_3(k = 100, 
                                    n = 10, 
                                    p = c(0.3, 0.85),
                                    A_1 = 6.063, 
